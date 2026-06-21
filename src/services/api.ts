@@ -5,6 +5,7 @@ export interface User {
     name: string;
     email: string;
     role: 'user' | 'admin';
+    createdAt?: string;
     token?: string;
 }
 
@@ -65,10 +66,10 @@ class ApiService {
         localStorage.removeItem('token');
     }
 
-    private async request(endpoint: string, options: RequestInit = {}) {
-        const headers: HeadersInit = {
+    async request(endpoint: string, options: RequestInit = {}) {
+        const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            ...(options.headers || {}),
+            ...(options.headers as Record<string, string> || {}),
         };
 
         const token = this.getToken();
@@ -198,7 +199,7 @@ class ApiService {
         const formData = new FormData();
         formData.append('image', file);
 
-        const headers: HeadersInit = {};
+        const headers: Record<string, string> = {};
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }

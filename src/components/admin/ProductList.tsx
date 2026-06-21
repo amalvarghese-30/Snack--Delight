@@ -18,7 +18,7 @@ export function ProductList() {
         setLoading(true);
         try {
             const data = await productService.getAllProducts();
-            const productsData = data.products || data;
+            const productsData = (data as any).products || data;
             setProducts(productsData);
         } catch (error) {
             console.error('Failed to fetch products:', error);

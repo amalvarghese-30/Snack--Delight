@@ -1,14 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Shield, UserX, UserCheck } from 'lucide-react';
-import { api } from '@/services/api';
-
-interface User {
-    _id: string;
-    name: string;
-    email: string;
-    role: string;
-    createdAt: string;
-}
+import { Shield } from 'lucide-react';
+import { api, User } from '@/services/api';
 
 export function UserList() {
     const [users, setUsers] = useState<User[]>([]);
@@ -84,7 +76,7 @@ export function UserList() {
                                         </span>
                                     </td>
                                     <td className="py-3 px-4 text-muted-foreground">
-                                        {new Date(user.createdAt).toLocaleDateString()}
+                                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                                     </td>
                                     <td className="py-3 px-4">
                                         <button

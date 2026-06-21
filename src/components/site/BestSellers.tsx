@@ -29,7 +29,7 @@ export function BestSellers() {
       // Fix: API now returns { products, pagination }
       const response = await api.getAllProducts();
       // Check if response has products array (pagination) or is direct array
-      const productsData = response.products || response;
+      const productsData = (response as any).products || response;
       // Show top 6 products as best sellers
       const formatted = productsData.map((p: any) => ({
         _id: p._id,

@@ -42,7 +42,7 @@ export function AdminDashboard() {
             // Fetch products count
             const productsData = await productService.getAllProducts();
             const productsCount = Array.isArray(productsData) ? productsData.length :
-                (productsData.products ? productsData.products.length : 0);
+                ((productsData as any).products ? (productsData as any).products.length : 0);
 
             const [orders, users] = await Promise.all([
                 api.getAllOrders().catch(() => []),
