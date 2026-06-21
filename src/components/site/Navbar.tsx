@@ -4,6 +4,7 @@ import { Menu, Search, ShoppingBag, User, X, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/stores/cartStore";
 import { api } from "@/services/api";
+import { getImageUrl } from '@/lib/utils';
 
 interface Category {
   _id: string;
@@ -250,7 +251,7 @@ export function Navbar() {
                       onClick={() => setSearchOpen(false)}
                       className="flex items-center gap-4 p-4 hover:bg-secondary/50 transition"
                     >
-                      <img src={product.image} alt={product.name} className="w-12 h-12 rounded object-cover" />
+                      <img src={getImageUrl(product.image)} alt={product.name} className="w-12 h-12 rounded object-cover" />
                       <div>
                         <h4 className="font-medium">{product.name}</h4>
                         <p className="text-sm text-muted-foreground">${product.price}</p>

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Edit, Trash2, Plus, Star, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { api } from '@/services/api';
+import { getImageUrl } from '@/lib/utils';
 
 interface Testimonial {
     _id: string;
@@ -210,7 +211,7 @@ export function TestimonialManager() {
                             <div className="flex gap-3">
                                 {testimonial.image ? (
                                     <img
-                                        src={testimonial.image}
+                                        src={getImageUrl(testimonial.image)}
                                         alt={testimonial.name}
                                         className="w-12 h-12 rounded-full object-cover"
                                     />

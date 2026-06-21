@@ -25,9 +25,7 @@ yarn-error.log*
 *.db
 *.sqlite
 
-# Uploads
-uploads/
-temp-uploads/
+
 
 # IDE
 .vscode/

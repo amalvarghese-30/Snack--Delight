@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Edit, Trash2, Plus } from 'lucide-react';
 import { productService, ProductFromDB } from '@/services/productService';
 import { ProductForm } from './ProductForm';
+import { getImageUrl } from '@/lib/utils';
 
 export function ProductList() {
     const [products, setProducts] = useState<ProductFromDB[]>([]);
@@ -126,7 +127,7 @@ export function ProductList() {
                                     <td className="py-3 px-4">
                                         <div className="flex items-center gap-3">
                                             {product.image && (
-                                                <img src={product.image} alt={product.name} className="w-10 h-10 rounded object-cover" />
+                                                <img src={getImageUrl(product.image)} alt={product.name} className="w-10 h-10 rounded object-cover" />
                                             )}
                                             <span>{product.name}</span>
                                         </div>

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Edit, Trash2, Plus, X, Upload, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
 import { api } from '@/services/api';
+import { getImageUrl } from '@/lib/utils';
 
 interface Category {
     _id: string;
@@ -188,7 +189,7 @@ export function CategoryList() {
                                     <td className="py-3 px-4">{category.order}</td>
                                     <td className="py-3 px-4">
                                         {category.image ? (
-                                            <img src={category.image} alt={category.name} className="w-10 h-10 rounded object-cover" />
+                                            <img src={getImageUrl(category.image)} alt={category.name} className="w-10 h-10 rounded object-cover" />
                                         ) : (
                                             <div className="w-10 h-10 rounded bg-secondary/30 flex items-center justify-center">
                                                 <ImageIcon className="h-5 w-5 text-muted-foreground" />
@@ -337,7 +338,7 @@ export function CategoryList() {
                                     <div className="mt-3">
                                         <p className="text-xs text-muted-foreground mb-2">Preview:</p>
                                         <img
-                                            src={formData.image}
+                                            src={getImageUrl(formData.image)}
                                             alt="Preview"
                                             className="h-20 w-20 rounded object-cover border border-border"
                                             onError={(e) => {

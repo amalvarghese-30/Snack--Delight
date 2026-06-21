@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Heart, Plus, Star, ImageOff } from 'lucide-react'
 import { useCartStore } from '@/stores/cartStore'
 import { useState } from 'react'
+import { getImageUrl } from '@/lib/utils'
 
 export function ProductCard({ product }: { product: any }) {
   const addItem = useCartStore((state) => state.addItem)
@@ -38,7 +39,7 @@ export function ProductCard({ product }: { product: any }) {
       <div className="relative aspect-[4/5] overflow-hidden bg-secondary/20">
         {!imageError && product.image ? (
           <img
-            src={product.image}
+            src={getImageUrl(product.image)}
             alt={product.name}
             loading="lazy"
             className="h-full w-full object-cover transition-transform duration-[1400ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-110"

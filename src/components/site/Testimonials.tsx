@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { Quote, Star, ImageIcon } from "lucide-react";
 import { api } from '@/services/api';
+import { getImageUrl } from '@/lib/utils';
 
 interface Testimonial {
   _id: string;
@@ -77,7 +78,7 @@ export function Testimonials() {
                 <div className="flex items-center gap-3">
                   {r.image ? (
                     <img
-                      src={r.image}
+                      src={getImageUrl(r.image)}
                       alt={r.name}
                       className="w-10 h-10 rounded-full object-cover"
                     />

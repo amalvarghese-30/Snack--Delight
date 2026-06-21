@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { X, Upload, Link as LinkIcon, Image as ImageIcon } from 'lucide-react';
 import { productService } from '@/services/productService';
 import { api } from '@/services/api';
+import { getImageUrl } from '@/lib/utils';
 
 interface ProductFormProps {
     product?: any;
@@ -327,7 +328,7 @@ export function ProductForm({ product, onClose, onSuccess }: ProductFormProps) {
                             <div className="mt-3">
                                 <p className="text-xs text-muted-foreground mb-2">Preview:</p>
                                 <img
-                                    src={formData.image}
+                                    src={getImageUrl(formData.image)}
                                     alt="Preview"
                                     className="h-24 w-24 rounded object-cover border border-border"
                                     onError={(e) => {

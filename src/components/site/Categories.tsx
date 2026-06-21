@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight, ImageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
 import { api } from '@/services/api';
+import { getImageUrl } from '@/lib/utils';
 
 interface Category {
   _id: string;
@@ -73,7 +74,7 @@ export function Categories() {
             >
               {category.image ? (
                 <img
-                  src={category.image}
+                  src={getImageUrl(category.image)}
                   alt={category.name}
                   loading="lazy"
                   className="h-full w-full object-cover transition-transform duration-[1500ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:scale-110"
