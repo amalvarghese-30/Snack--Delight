@@ -252,7 +252,8 @@ class ApiService {
 
     // Admin endpoints
     async getAllOrders(): Promise<Order[]> {
-        return this.request('/orders');
+        const data = await this.request('/orders');
+        return data.orders || data;
     }
 
     async updateOrderStatus(orderId: string, status: string): Promise<Order> {
