@@ -20,7 +20,6 @@ import fileUpload from 'express-fileupload';
 import { createIndexes } from './config/indexes.js';
 import testimonialRoutes from './routes/testimonials.js';
 import { validateEnv } from './config/validateEnv.js';
-import csrfProtection, { csrfTokenHandler, csrfErrorHandler } from './middleware/csrf.js';
 import Logger from './config/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -124,8 +123,8 @@ app.use(cors({
     } : true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'Idempotency-Key'],
-    exposedHeaders: ['X-CSRF-Token']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key'],
+    exposedHeaders: []
 }));
 
 // ============ HTTPS ENFORCEMENT ============
@@ -194,24 +193,6 @@ app.use('/uploads', express.static(uploadsPath, {
 }));
 Logger.info(`📁 Serving uploads from: ${uploadsPath}`);
 
-// ============ CSRF PROTECTION ============
-// CSRF token endpoint (always generates a token + cookie)
-app.get('/api/csrf-token', csrfProtection, csrfTokenHandler);
-
-// Apply CSRF protection to state-changing endpoints
-app.use('/api/auth/login', csrfProtection);
-app.use('/api/auth/register', csrfProtection);
-app.use('/api/auth/logout', csrfProtection);
-app.use('/api/auth/change-password', csrfProtection);
-app.use('/api/auth/forgot-password', csrfProtection);
-app.use('/api/auth/reset-password/:token', csrfProtection);
-app.use('/api/orders', csrfProtection);
-app.use('/api/contact/submit', csrfProtection);
-app.use('/api/newsletter/subscribe', csrfProtection);
-app.use('/api/products', csrfProtection);
-app.use('/api/categories', csrfProtection);
-app.use('/api/testimonials', csrfProtection);
-
 // ============ RATE LIMITING APPLICATION ============
 app.use('/api/', limiter);
 app.use('/api/auth/login', authLimiter);
@@ -251,9 +232,6 @@ app.use((req, res) => {
         path: req.originalUrl
     });
 });
-
-// ============ CSRF ERROR HANDLER ============
-app.use(csrfErrorHandler);
 
 // ============ GLOBAL ERROR HANDLER ============
 app.use(errorHandler);
@@ -318,7 +296,7 @@ server = app.listen(PORT, () => {
     Logger.info(`🚀 Server running on port ${PORT}`);
     Logger.info(`📦 Environment: ${isProduction ? 'production' : 'development'}`);
     Logger.info(`🔒 CORS: ${isProduction ? 'restricted' : 'open'}`);
-    Logger.info(`🛡️  CSRF Protection: Enabled for state-changing endpoints`);
+    Logger.info(`🛡️  Auth: JWT Bearer tokens (no CSRF needed for SPA)`);
     Logger.info(`📝 Logging: ${isProduction ? 'File + Console' : 'Console'}`);
 });
 
