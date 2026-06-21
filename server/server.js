@@ -36,6 +36,9 @@ const isProduction = envConfig.isProduction;
 
 const app = express();
 
+// Trust proxy - required for Render/Heroku/etc (HTTPS, cookies, rate limiting)
+app.set('trust proxy', 1);
+
 // Connect to MongoDB and create indexes
 const startServer = async () => {
     try {
@@ -256,10 +259,15 @@ app.use(csrfErrorHandler);
 app.use(errorHandler);
 
 // ============ GRACEFUL SHUTDOWN ============
+let server;
+
 const gracefulShutdown = async (signal) => {
     Logger.info(`${signal} received. Starting graceful shutdown...`);
 
-    const server = app.listen(PORT);
+    if (!server) {
+        Logger.info('No server to shut down');
+        process.exit(0);
+    }
 
     server.close(async () => {
         Logger.info('HTTP server closed');
@@ -306,7 +314,7 @@ process.on('uncaughtException', (error) => {
 });
 
 // ============ START SERVER ============
-const server = app.listen(PORT, () => {
+server = app.listen(PORT, () => {
     Logger.info(`🚀 Server running on port ${PORT}`);
     Logger.info(`📦 Environment: ${isProduction ? 'production' : 'development'}`);
     Logger.info(`🔒 CORS: ${isProduction ? 'restricted' : 'open'}`);
