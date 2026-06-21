@@ -1,6 +1,7 @@
 // src/components/admin/TestimonialManager.tsx - FIXED VERSION
 import { useState, useEffect } from 'react';
 import { Edit, Trash2, Plus, Star, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { api } from '@/services/api';
 
 interface Testimonial {
     _id: string;
@@ -38,14 +39,7 @@ export function TestimonialManager() {
 
     const fetchTestimonials = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/testimonials/all', {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
-
-            if (!response.ok) throw new Error('Failed to fetch');
-
-            const data = await response.json();
+            const data = await api.getTestimonials();
             if (data.success) {
                 setTestimonials(data.testimonials);
             } else {
@@ -65,21 +59,9 @@ export function TestimonialManager() {
         setMessage(null);
 
         try {
-            const token = localStorage.getItem('token');
-            const url = editing
-                ? `http://localhost:5000/api/testimonials/${editing._id}`
-                : 'http://localhost:5000/api/testimonials';
-
-            const response = await fetch(url, {
-                method: editing ? 'PUT' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const data = await response.json();
+            const data = editing
+                ? await api.updateTestimonial(editing._id, formData)
+                : await api.createTestimonial(formData);
 
             if (data.success) {
                 setMessage({ type: 'success', text: editing ? 'Testimonial updated!' : 'Testimonial created!' });
@@ -101,14 +83,7 @@ export function TestimonialManager() {
         if (!confirm(`Delete testimonial from ${name}?`)) return;
 
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/testimonials/${id}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
-
-            const data = await response.json();
-
+            const data = await api.deleteTestimonial(id);
             if (data.success) {
                 setMessage({ type: 'success', text: 'Testimonial deleted!' });
                 await fetchTestimonials();
@@ -156,15 +131,7 @@ export function TestimonialManager() {
 
     const toggleStatus = async (id: string, currentStatus: boolean) => {
         try {
-            const token = localStorage.getItem('token');
-            await fetch(`http://localhost:5000/api/testimonials/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({ isActive: !currentStatus }),
-            });
+            await api.updateTestimonial(id, { isActive: !currentStatus });
             await fetchTestimonials();
         } catch (error) {
             console.error('Failed to update status:', error);

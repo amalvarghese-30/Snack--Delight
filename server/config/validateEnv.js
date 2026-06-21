@@ -43,10 +43,22 @@ export function validateEnv() {
 
     console.log('✅ Environment variables validated');
 
+    // Build allowed origins: ALLOWED_ORIGINS (comma-separated) + FRONTEND_URL + localhost fallback
+    const allowedOrigins = [];
+    if (process.env.ALLOWED_ORIGINS) {
+        allowedOrigins.push(...process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()));
+    }
+    if (process.env.FRONTEND_URL && !allowedOrigins.includes(process.env.FRONTEND_URL)) {
+        allowedOrigins.push(process.env.FRONTEND_URL);
+    }
+    if (allowedOrigins.length === 0) {
+        allowedOrigins.push('http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173');
+    }
+
     return {
         isProduction: process.env.NODE_ENV === 'production',
         port: parseInt(process.env.PORT) || 5000,
         maxFileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024,
-        allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173']
+        allowedOrigins
     };
 }

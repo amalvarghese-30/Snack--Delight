@@ -1,6 +1,7 @@
 // src/components/site/Testimonials.tsx (FULLY UPDATED)
 import { useState, useEffect } from 'react';
 import { Quote, Star, ImageIcon } from "lucide-react";
+import { api } from '@/services/api';
 
 interface Testimonial {
   _id: string;
@@ -21,9 +22,7 @@ export function Testimonials() {
 
   const fetchTestimonials = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/testimonials');
-      const data = await response.json();
-
+      const data = await api.getPublicTestimonials();
       if (data.success) {
         setTestimonials(data.testimonials);
       }

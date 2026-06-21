@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Mail, Trash2 } from 'lucide-react';
+import { api } from '@/services/api';
 
 interface Subscriber {
     _id: string;
@@ -19,11 +20,7 @@ export function NewsletterList() {
 
     const fetchSubscribers = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/newsletter', {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
-            const data = await response.json();
+            const data = await api.getNewsletterSubscribers();
             setSubscribers(data);
             setStats({
                 total: data.length,

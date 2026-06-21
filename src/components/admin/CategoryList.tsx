@@ -37,13 +37,7 @@ export function CategoryList() {
 
     const fetchCategories = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/categories/all', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
+            const data = await api.getCategories();
             setCategories(data);
         } catch (error) {
             console.error('Failed to fetch categories:', error);
@@ -71,23 +65,7 @@ export function CategoryList() {
         setError('');
 
         try {
-            const token = localStorage.getItem('token');
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const response = await fetch('http://localhost:5000/api/categories/upload-image', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: formData,
-            });
-
-            if (!response.ok) {
-                throw new Error('Upload failed');
-            }
-
-            const result = await response.json();
+            const result = await api.uploadCategoryImage(file);
             setFormData(prev => ({ ...prev, image: result.imageUrl }));
         } catch (err: any) {
             setError(err.message || 'Failed to upload image');
@@ -102,25 +80,11 @@ export function CategoryList() {
         setError('');
 
         try {
-            const token = localStorage.getItem('token');
-            const url = editingCategory
-                ? `http://localhost:5000/api/categories/${editingCategory._id}`
-                : 'http://localhost:5000/api/categories';
-
-            const response = await fetch(url, {
-                method: editingCategory ? 'PUT' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Failed to save category');
+            if (editingCategory) {
+                await api.updateCategory(editingCategory._id, formData);
+            } else {
+                await api.createCategory(formData);
             }
-
             await fetchCategories();
             handleCloseForm();
         } catch (err: any) {
@@ -133,13 +97,7 @@ export function CategoryList() {
     const handleDelete = async (id: string, name: string) => {
         if (confirm(`Are you sure you want to delete category "${name}"?`)) {
             try {
-                const token = localStorage.getItem('token');
-                await fetch(`http://localhost:5000/api/categories/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                    },
-                });
+                await api.deleteCategory(id);
                 await fetchCategories();
             } catch (error) {
                 console.error('Failed to delete category:', error);

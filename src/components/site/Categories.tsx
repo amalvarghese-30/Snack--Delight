@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight, ImageIcon } from "lucide-react";
 import { useState, useEffect } from "react";
+import { api } from '@/services/api';
 
 interface Category {
   _id: string;
@@ -23,8 +24,7 @@ export function Categories() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/categories');
-      const data = await response.json();
+      const data = await api.getPublicCategories();
       setCategories(data);
     } catch (error) {
       console.error('Failed to fetch categories:', error);

@@ -1,6 +1,7 @@
 // src/components/admin/CategoryForm.tsx
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { api } from '@/services/api';
 
 interface CategoryFormProps {
     category?: any;
@@ -39,25 +40,11 @@ export function CategoryForm({ category, onClose, onSuccess }: CategoryFormProps
         setError('');
 
         try {
-            const token = localStorage.getItem('token');
-            const url = category
-                ? `http://localhost:5000/api/categories/${category._id}`
-                : 'http://localhost:5000/api/categories';
-
-            const response = await fetch(url, {
-                method: category ? 'PUT' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || 'Failed to save category');
+            if (category) {
+                await api.updateCategory(category._id, formData);
+            } else {
+                await api.createCategory(formData);
             }
-
             onSuccess();
             onClose();
         } catch (err: any) {

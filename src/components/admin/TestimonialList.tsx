@@ -1,6 +1,7 @@
 // src/components/admin/TestimonialList.tsx
 import { useState, useEffect } from 'react';
 import { Edit, Trash2, Plus, Star, X } from 'lucide-react';
+import { api } from '@/services/api';
 
 interface Testimonial {
     _id: string;
@@ -32,12 +33,8 @@ export function TestimonialList() {
 
     const fetchTestimonials = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/testimonials/all', {
-                headers: { 'Authorization': `Bearer ${token}` },
-            });
-            const data = await response.json();
-            setTestimonials(data);
+            const data = await api.getTestimonials();
+            setTestimonials(data.testimonials || data);
         } catch (error) {
             console.error('Failed to fetch testimonials:', error);
         } finally {
@@ -48,26 +45,15 @@ export function TestimonialList() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            const url = editing
-                ? `http://localhost:5000/api/testimonials/${editing._id}`
-                : 'http://localhost:5000/api/testimonials';
-
-            const response = await fetch(url, {
-                method: editing ? 'PUT' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify(formData),
-            });
-
-            if (response.ok) {
-                await fetchTestimonials();
-                setShowForm(false);
-                setEditing(null);
-                setFormData({ name: '', location: '', content: '', rating: 5, order: 0, isActive: true });
+            if (editing) {
+                await api.updateTestimonial(editing._id, formData);
+            } else {
+                await api.createTestimonial(formData);
             }
+            await fetchTestimonials();
+            setShowForm(false);
+            setEditing(null);
+            setFormData({ name: '', location: '', content: '', rating: 5, order: 0, isActive: true });
         } catch (error) {
             console.error('Failed to save testimonial:', error);
         }
@@ -76,11 +62,7 @@ export function TestimonialList() {
     const handleDelete = async (id: string) => {
         if (confirm('Delete this testimonial?')) {
             try {
-                const token = localStorage.getItem('token');
-                await fetch(`http://localhost:5000/api/testimonials/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` },
-                });
+                await api.deleteTestimonial(id);
                 await fetchTestimonials();
             } catch (error) {
                 console.error('Failed to delete:', error);

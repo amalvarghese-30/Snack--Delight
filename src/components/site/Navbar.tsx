@@ -46,8 +46,7 @@ export function Navbar() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/categories');
-      const data = await response.json();
+      const data = await api.getPublicCategories();
       setCategories(data);
     } catch (error) {
       console.error('Failed to fetch categories:', error);

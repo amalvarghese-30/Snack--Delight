@@ -48,6 +48,7 @@ export interface PaginatedResponse<T> {
 
 class ApiService {
     private token: string | null = null;
+    private csrfToken: string | null = null;
 
     setToken(token: string) {
         this.token = token;
@@ -66,7 +67,30 @@ class ApiService {
         localStorage.removeItem('token');
     }
 
-    async request(endpoint: string, options: RequestInit = {}) {
+    async fetchCsrfToken(): Promise<string | null> {
+        try {
+            const response = await fetch(`${API_URL}/csrf-token`, {
+                credentials: 'include',
+            });
+            const data = await response.json();
+            if (data.csrfToken) {
+                this.csrfToken = data.csrfToken;
+                return data.csrfToken;
+            }
+        } catch (err) {
+            console.warn('Failed to fetch CSRF token:', err);
+        }
+        return null;
+    }
+
+    async getCsrfToken(): Promise<string | null> {
+        if (!this.csrfToken) {
+            await this.fetchCsrfToken();
+        }
+        return this.csrfToken;
+    }
+
+    async request(endpoint: string, options: RequestInit = {}, retryOnCsrfError = true): Promise<any> {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
             ...(options.headers as Record<string, string> || {}),
@@ -77,9 +101,19 @@ class ApiService {
             headers['Authorization'] = `Bearer ${token}`;
         }
 
+        // Include CSRF token for state-changing methods
+        const method = (options.method || 'GET').toUpperCase();
+        if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+            const csrf = await this.getCsrfToken();
+            if (csrf) {
+                headers['X-CSRF-Token'] = csrf;
+            }
+        }
+
         const response = await fetch(`${API_URL}${endpoint}`, {
             ...options,
             headers,
+            credentials: 'include',
         });
 
         if (response.status === 401) {
@@ -87,6 +121,18 @@ class ApiService {
             if (typeof window !== 'undefined') {
                 window.location.href = '/admin/login';
             }
+        }
+
+        // Handle CSRF token invalid - refresh token and retry once
+        if (response.status === 403 && retryOnCsrfError) {
+            try {
+                const data = await response.clone().json();
+                if (data.message?.includes('CSRF')) {
+                    this.csrfToken = null;
+                    await this.fetchCsrfToken();
+                    return this.request(endpoint, options, false);
+                }
+            } catch {}
         }
 
         const data = await response.json();
@@ -266,8 +312,99 @@ class ApiService {
         return this.request('/auth/users');
     }
 
+    async updateUserRole(userId: string, role: string): Promise<User> {
+        return this.request(`/auth/users/${userId}/role`, {
+            method: 'PUT',
+            body: JSON.stringify({ role }),
+        });
+    }
+
     async getNewsletterSubscribers(): Promise<any[]> {
         return this.request('/newsletter');
+    }
+
+    // Testimonials
+    async getTestimonials(): Promise<any> {
+        return this.request('/testimonials/all');
+    }
+
+    async createTestimonial(data: any): Promise<any> {
+        return this.request('/testimonials', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async updateTestimonial(id: string, data: any): Promise<any> {
+        return this.request(`/testimonials/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async deleteTestimonial(id: string): Promise<any> {
+        return this.request(`/testimonials/${id}`, { method: 'DELETE' });
+    }
+
+    // Categories
+    async getCategories(): Promise<any[]> {
+        return this.request('/categories/all');
+    }
+
+    async createCategory(data: any): Promise<any> {
+        return this.request('/categories', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async updateCategory(id: string, data: any): Promise<any> {
+        return this.request(`/categories/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+    }
+
+    async deleteCategory(id: string): Promise<any> {
+        return this.request(`/categories/${id}`, { method: 'DELETE' });
+    }
+
+    async uploadCategoryImage(file: File): Promise<{ imageUrl: string }> {
+        const token = this.getToken();
+        const csrf = await this.getCsrfToken();
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const headers: Record<string, string> = {};
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+        if (csrf) {
+            headers['X-CSRF-Token'] = csrf;
+        }
+
+        const response = await fetch(`${API_URL}/categories/upload-image`, {
+            method: 'POST',
+            headers,
+            body: formData,
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.message || 'Upload failed');
+        }
+
+        return response.json();
+    }
+
+    // Public
+    async getPublicCategories(): Promise<any[]> {
+        return this.request('/categories');
+    }
+
+    async getPublicTestimonials(): Promise<any> {
+        return this.request('/testimonials');
     }
 }
 

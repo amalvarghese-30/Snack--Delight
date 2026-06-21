@@ -25,16 +25,7 @@ export function UserList() {
         const newRole = currentRole === 'admin' ? 'user' : 'admin';
         if (confirm(`Change user role to ${newRole}?`)) {
             try {
-                // You'll need to add this endpoint in your backend
-                const token = localStorage.getItem('token');
-                await fetch(`http://localhost:5000/api/auth/users/${userId}/role`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ role: newRole }),
-                });
+                await api.updateUserRole(userId, newRole);
                 fetchUsers();
             } catch (error) {
                 console.error('Failed to update role:', error);
