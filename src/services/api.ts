@@ -242,6 +242,7 @@ class ApiService {
     // Image Upload
     async uploadImage(file: File): Promise<{ imageUrl: string }> {
         const token = this.getToken();
+        const csrf = await this.getCsrfToken();
         const formData = new FormData();
         formData.append('image', file);
 
@@ -249,11 +250,15 @@ class ApiService {
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
         }
+        if (csrf) {
+            headers['X-CSRF-Token'] = csrf;
+        }
 
         const response = await fetch(`${API_URL}/products/upload-image`, {
             method: 'POST',
             headers,
             body: formData,
+            credentials: 'include',
         });
 
         if (!response.ok) {

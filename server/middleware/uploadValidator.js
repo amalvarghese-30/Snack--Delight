@@ -1,6 +1,6 @@
-// server/middleware/uploadValidator.js - ENHANCED
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { fileTypeFromBuffer } from 'file-type';
 import sharp from 'sharp';
 

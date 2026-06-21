@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
@@ -145,7 +146,7 @@ app.use(helmet({
             scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://checkout.razorpay.com", "https://www.google.com", "https://www.gstatic.com"],
             imgSrc: ["'self'", "data:", "https:", "http:", "https://images.pexels.com", "https://via.placeholder.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com"],
-            connectSrc: ["'self'", "https://api.razorpay.com"],
+            connectSrc: ["'self'", isProduction ? process.env.FRONTEND_URL || '' : 'http://localhost:5173', "https://api.razorpay.com"],
             frameSrc: ["'self'", "https://api.razorpay.com"],
             upgradeInsecureRequests: isProduction ? [] : null,
         },

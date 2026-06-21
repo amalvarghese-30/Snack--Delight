@@ -14,6 +14,7 @@ export default function CheckoutPage() {
         email: '',
         address: '',
         city: '',
+        state: '',
         zipCode: '',
         paymentMethod: 'cod',
     });
@@ -39,6 +40,7 @@ export default function CheckoutPage() {
                 shippingAddress: {
                     street: formData.address,
                     city: formData.city,
+                    state: formData.state,
                     zipCode: formData.zipCode,
                     country: 'US',
                 },
@@ -97,6 +99,14 @@ export default function CheckoutPage() {
                                 className="w-full rounded-lg border border-border bg-transparent px-4 py-3"
                                 value={formData.city}
                                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                            />
+                            <input
+                                type="text"
+                                placeholder="State"
+                                required
+                                className="w-full rounded-lg border border-border bg-transparent px-4 py-3"
+                                value={formData.state}
+                                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                             />
                             <input
                                 type="text"

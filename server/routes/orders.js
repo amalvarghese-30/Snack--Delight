@@ -1,4 +1,4 @@
-// server/routes/orders.js - COMPLETE WITH TRANSACTIONS
+// server/routes/orders.js
 import express from 'express';
 import mongoose from 'mongoose';
 import Order from '../models/Order.js';
@@ -8,40 +8,18 @@ import { sendOrderConfirmation } from '../config/email.js';
 
 const router = express.Router();
 
-// Add near the top of orders.js
-const processedIdempotencyKeys = new Map(); // In production, use Redis
+const processedIdempotencyKeys = new Map();
 
-const checkIdempotency = async (req, res, next) => {
+// Create order with atomic operations
+router.post('/', protect, async (req, res) => {
     const idempotencyKey = req.headers['idempotency-key'];
 
-    if (!idempotencyKey) {
-        return next();
-    }
-
-    if (processedIdempotencyKeys.has(idempotencyKey)) {
+    if (idempotencyKey && processedIdempotencyKeys.has(idempotencyKey)) {
         return res.status(409).json({
             message: 'Duplicate request detected',
             order: processedIdempotencyKeys.get(idempotencyKey)
         });
     }
-
-    next();
-};
-
-// Apply to order creation route
-router.post('/', protect, checkIdempotency, async (req, res) => {
-    // ... existing order creation code ...
-
-    // After successful order creation
-    const idempotencyKey = req.headers['idempotency-key'];
-    if (idempotencyKey) {
-        processedIdempotencyKeys.set(idempotencyKey, order);
-        // Clean up after 24 hours
-        setTimeout(() => processedIdempotencyKeys.delete(idempotencyKey), 24 * 60 * 60 * 1000);
-    }
-});
-// Create order with atomic operations (TRANSACTION SUPPORT)
-router.post('/', protect, async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -123,6 +101,12 @@ router.post('/', protect, async (req, res) => {
 
         await session.commitTransaction();
         session.endSession();
+
+        // Cache order for idempotency
+        if (idempotencyKey) {
+            processedIdempotencyKeys.set(idempotencyKey, order);
+            setTimeout(() => processedIdempotencyKeys.delete(idempotencyKey), 24 * 60 * 60 * 1000);
+        }
 
         // Send order confirmation email (don't await - don't block response)
         sendOrderConfirmation(order, req.user).catch(err => {

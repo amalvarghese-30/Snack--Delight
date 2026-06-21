@@ -71,7 +71,7 @@ export default function ProductPage() {
         if (!product) return
 
         addToCart({
-            productId: product.slug,
+            productId: product._id,
             slug: product.slug,
             name: product.name,
             price: product.price,
