@@ -1,0 +1,392 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  @font-face {
+    font-family: "Fraunces";
+    font-style: normal;
+    font-weight: 300 900;
+    font-display: swap;
+    src: url("https://fonts.gstatic.com/s/fraunces/v37/6NUh8FyLNQOQZAnv9bYEvDiIdE9Ea92uemAk.woff2") format("woff2");
+  }
+
+  @font-face {
+    font-family: "Inter Tight";
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url("https://fonts.gstatic.com/s/intertight/v11/NGSnv5HMAFg6IuGlBNMjxJEL2VmU3NS7Z2mjDw.woff2") format("woff2");
+  }
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-cream: var(--cream);
+  --color-forest: var(--forest);
+  --color-cocoa: var(--cocoa);
+
+  --shadow-luxe: 0 30px 80px -20px color-mix(in oklab, var(--gold) 25%, transparent);
+  --shadow-card: 0 20px 50px -20px oklch(0 0 0 / 0.6);
+}
+
+:root {
+  --radius: 1rem;
+
+  /* Matte black base */
+  --background: oklch(0.14 0.012 60);
+  --foreground: oklch(0.95 0.018 80);
+
+  --card: oklch(0.18 0.014 60);
+  --card-foreground: oklch(0.95 0.018 80);
+  --popover: oklch(0.16 0.014 60);
+  --popover-foreground: oklch(0.95 0.018 80);
+
+  /* Muted gold = primary */
+  --primary: oklch(0.78 0.12 80);
+  --primary-foreground: oklch(0.14 0.012 60);
+
+  --secondary: oklch(0.22 0.018 55);
+  --secondary-foreground: oklch(0.95 0.018 80);
+
+  --muted: oklch(0.22 0.014 60);
+  --muted-foreground: oklch(0.7 0.018 70);
+
+  --accent: oklch(0.32 0.05 50);
+  --accent-foreground: oklch(0.95 0.018 80);
+
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.28 0.02 60 / 0.6);
+  --input: oklch(0.28 0.02 60 / 0.7);
+  --ring: oklch(0.78 0.12 80 / 0.5);
+
+  /* Brand tokens */
+  --gold: oklch(0.78 0.12 80);
+  --gold-soft: oklch(0.85 0.08 85);
+  --cream: oklch(0.94 0.03 85);
+  --forest: oklch(0.32 0.06 150);
+  --cocoa: oklch(0.28 0.045 50);
+
+  --gradient-luxe: radial-gradient(ellipse at top,
+      oklch(0.22 0.04 70 / 0.6),
+      transparent 60%), linear-gradient(180deg, oklch(0.16 0.014 60), oklch(0.12 0.012 55));
+  --gradient-gold: linear-gradient(135deg, var(--gold-soft), var(--gold) 60%, oklch(0.6 0.12 70));
+  --gradient-fade: linear-gradient(180deg, transparent, oklch(0.12 0.012 55) 90%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background: var(--gradient-luxe);
+    background-attachment: fixed;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  ::selection {
+    background: var(--gold);
+    color: var(--primary-foreground);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--background) 55%, transparent);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid color-mix(in oklab, var(--gold) 12%, transparent);
+  }
+
+  .glass-card {
+    background: linear-gradient(135deg,
+        color-mix(in oklab, var(--card) 80%, transparent),
+        color-mix(in oklab, var(--card) 40%, transparent));
+    backdrop-filter: blur(20px);
+    border: 1px solid color-mix(in oklab, var(--gold) 14%, transparent);
+  }
+
+  .text-gradient-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .gold-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+    opacity: 0.5;
+  }
+
+  .hover-lift {
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-luxe);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .float-slow {
+    animation: float 9s ease-in-out infinite;
+  }
+
+  .float-slower {
+    animation: float 13s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+
+    50% {
+      transform: translateY(-18px) rotate(2deg);
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+
+    100% {
+      background-position: 200% 0;
+    }
+  }
+
+  .marquee {
+    display: flex;
+    gap: 4rem;
+    animation: marquee 40s linear infinite;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .loader-veil {
+    animation: veil 1.4s cubic-bezier(0.7, 0, 0.2, 1) forwards;
+    animation-delay: 1.6s;
+  }
+
+  @keyframes veil {
+    to {
+      transform: translateY(-100%);
+    }
+  }
+
+  .loader-fade {
+    animation: loaderFade 0.4s ease forwards;
+    animation-delay: 1.4s;
+  }
+
+  @keyframes loaderFade {
+    to {
+      opacity: 0;
+    }
+  }
+}
+
+/* Add to src/styles.css - Mobile Responsive Improvements */
+
+@layer utilities {
+
+  /* Mobile menu improvements */
+  @media (max-width: 768px) {
+    .glass-card {
+      backdrop-filter: blur(12px);
+    }
+
+    .container-padding {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    .text-responsive-hero {
+      font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+
+    .text-responsive-title {
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+    }
+  }
+
+  /* Touch-friendly buttons */
+  @media (max-width: 768px) {
+
+    button,
+    a,
+    [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  /* Smooth scrolling for mobile */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* Better touch targets for mobile */
+  .touch-target {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* Mobile-first grid adjustments */
+  .responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .responsive-grid {
+      gap: 1.5rem;
+    }
+  }
+}
+
+/* Add to src/styles.css - Replace the temporary fix with this */
+
+/* Product card visibility fix - Keep these */
+.group {
+  display: block !important;
+  visibility: visible !important;
+}
+
+.glass-card {
+  background: linear-gradient(135deg,
+      color-mix(in oklab, var(--card) 80%, transparent),
+      color-mix(in oklab, var(--card) 40%, transparent));
+  backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in oklab, var(--gold) 14%, transparent);
+}
+
+/* Ensure grid items are visible */
+.grid>div {
+  display: block !important;
+}
+
+/* PROPER reveal animation - not forcing opacity */
+.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fallback for browsers that might not support IntersectionObserver */
+.no-js .reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ensure images are visible */
+img {
+  display: block;
+  max-width: 100%;
+}

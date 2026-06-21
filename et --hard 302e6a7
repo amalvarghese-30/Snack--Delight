@@ -1,0 +1,24 @@
+[33mb1a7d99[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{0}: Branch: renamed refs/heads/latest_branch to refs/heads/main
+[33mb1a7d99[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m HEAD@{2}: commit (initial): Initial clean commit
+[33m302e6a7[m HEAD@{3}: Branch: renamed refs/heads/main to refs/heads/main
+[33m302e6a7[m HEAD@{5}: commit: Fixed backend crashes and API issues
+[33mddb6850[m HEAD@{6}: commit: fixed vercel output1
+[33mf3eace0[m HEAD@{7}: commit: fixed vercel output1
+[33me04f731[m HEAD@{8}: commit: fixed vercel output1
+[33m25c0c0c[m HEAD@{9}: commit: fixed vercel output1
+[33mdeb531d[m HEAD@{10}: commit: fixed vercel output1
+[33m26d2c06[m HEAD@{11}: commit: fixed vercel output1
+[33mcb54146[m HEAD@{12}: commit: fixed vercel output1
+[33me2e39c0[m HEAD@{13}: commit: fixed vercel output1
+[33mc48cadb[m HEAD@{14}: commit: fixed vercel output1
+[33m1af4ffe[m HEAD@{15}: commit: fixed tanstack vite config
+[33m0fdb07d[m HEAD@{16}: commit: fixed vercel output
+[33mc2ae009[m HEAD@{17}: pull origin main --rebase (finish): returning to refs/heads/main
+[33mc2ae009[m HEAD@{18}: pull origin main --rebase (pick): fixed vercel output
+[33m0985016[m HEAD@{19}: pull origin main --rebase (start): checkout 098501694000b2ef4155fb6a4288dba9dc6eff10
+[33m07aeb23[m HEAD@{20}: commit: fixed vercel output
+[33m3e8ac45[m HEAD@{21}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3e8ac45[m HEAD@{23}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3e8ac45[m HEAD@{25}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3e8ac45[m HEAD@{27}: commit: Initial commit
+[33mfb3c56a[m HEAD@{28}: clone: from https://github.com/amalvarghese-30/gilded-harvest.git
