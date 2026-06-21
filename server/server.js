@@ -191,16 +191,8 @@ app.use('/uploads', express.static(uploadsPath, {
 Logger.info(`📁 Serving uploads from: ${uploadsPath}`);
 
 // ============ CSRF PROTECTION ============
-// CSRF token endpoint (GET only, no CSRF protection needed)
-app.get('/api/csrf-token', (req, res, next) => {
-    // Generate CSRF token only for authenticated requests or specific paths
-    const needsCsrf = req.query.for === 'form' || req.headers.authorization;
-    if (needsCsrf) {
-        csrfProtection(req, res, () => csrfTokenHandler(req, res));
-    } else {
-        res.json({ csrfToken: null, message: 'CSRF token available on POST endpoints' });
-    }
-});
+// CSRF token endpoint (always generates a token + cookie)
+app.get('/api/csrf-token', csrfProtection, csrfTokenHandler);
 
 // Apply CSRF protection to state-changing endpoints
 app.use('/api/auth/login', csrfProtection);
