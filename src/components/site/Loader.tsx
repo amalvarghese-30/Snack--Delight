@@ -10,7 +10,7 @@ export function Loader() {
   return (
     <div className="fixed inset-0 z-[100] grain loader-veil bg-background">
       <div className="absolute inset-0 flex flex-col items-center justify-center loader-fade">
-        <div className="font-display text-5xl tracking-[0.18em] text-gradient-gold">
+        <div className="font-display text-3xl xs:text-4xl md:text-5xl tracking-[0.18em] text-gradient-gold text-center px-4">
           Snacks Delight
         </div>
         <div className="mt-6 h-[1px] w-44 overflow-hidden bg-border">
