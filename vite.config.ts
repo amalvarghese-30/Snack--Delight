@@ -9,13 +9,23 @@ export default defineConfig({
     tailwindcss(),
     tsconfigPaths(),
   ],
+
   server: {
+    host: '0.0.0.0',
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'http://localhost:3003',
         changeOrigin: true,
       },
     },
+  },
+
+  preview: {
+    host: '0.0.0.0',
+    port: 3002,
+    allowedHosts: [
+      'snackdelight.stillworks.in',
+    ],
   },
 })
